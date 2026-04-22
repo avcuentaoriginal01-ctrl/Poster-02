@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390, initial-scale=1.0">
+<title>Illegal Trade Poster</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Share+Tech+Mono&family=Roboto:wght@400;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif;
+  }
+
+  /* ===================== POSTER ===================== */
+  .poster {
+    width: 390px;
+    height: 844px;
+    position: relative;
+    overflow: hidden;
+    color: #cdd8e8;
+  }
+
+  /* BG image */
+  .poster-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    animation: bgPulse 1.2s ease-out 0.2s both;
+  }
+
+  .poster-bg .bg-layer {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: opacity 1.5s ease-in-out;
+  }
+
+  .poster-bg .bg-layer.bg1 { background-image: url('fondo.jpeg'); }
+  .poster-bg .bg-layer.bg2 { background-image: url('fondo 2.jpeg'); opacity: 0; }
+
+  .poster-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(4,8,18,0.84) 0%,
+      rgba(6,12,28,0.68) 40%,
+      rgba(4,8,18,0.88) 100%
+    );
+  }
+
+  @keyframes bgPulse {
+    0%   { filter: brightness(0) saturate(0); }
+    40%  { filter: brightness(0.4) saturate(0.5) hue-rotate(20deg); }
+    70%  { filter: brightness(1.15) saturate(1.3); }
+    100% { filter: brightness(1) saturate(1); }
+  }
+
+  /* Stars */
+  .stars {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    opacity: 0;
+    animation: fadeIn 0.8s ease forwards 1.0s;
+    background-image:
+      radial-gradient(1px 1px at 8%  10%, rgba(255,255,255,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 22% 6%,  rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 38% 14%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 4%,  rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 72% 9%,  rgba(255,255,255,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 88% 16%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 4%  30%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 80% 35%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 92% 52%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 47% 42%, rgba(255,255,255,0.4) 0%, transparent 100%);
+  }
+
+  /* ===================== RAIN CANVAS ===================== */
+  .title-rain {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 3;
+  }
+  .scanline {
+    position: absolute;
+    top: -6px;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(to bottom,
+      transparent 0%,
+      rgba(80,140,255,0.15) 20%,
+      rgba(100,180,255,0.7) 50%,
+      rgba(80,140,255,0.15) 80%,
+      transparent 100%
+    );
+    box-shadow: 0 0 18px 6px rgba(80,160,255,0.4);
+    z-index: 20;
+    animation: scan 1.4s cubic-bezier(0.4,0,0.2,1) 0.3s forwards;
+  }
+
+  @keyframes scan {
+    0%   { top: -6px; opacity: 1; }
+    90%  { top: 850px; opacity: 1; }
+    100% { top: 850px; opacity: 0; }
+  }
+
+  /* ===================== CONTENT ===================== */
+  .content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 16px 14px;
+  }
+
+  /* ===================== TITLE ===================== */
+  .title-section {
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+
+  /* Each letter wrapped in span via JS */
+  .title-row {
+    display: block;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    overflow: hidden;
+  }
+
+  .title-row.solid  { font-size: 54px; color: #8b1a1a; }
+  .title-row.echo1  { font-size: 44px; color: transparent; -webkit-text-stroke: 1.5px #6b1212; margin-top: -4px; }
+  .title-row.echo2  { font-size: 33px; color: transparent; -webkit-text-stroke: 1px #4a0d0d;   margin-top: -3px; }
+  .title-row.echo3  { font-size: 22px; color: transparent; -webkit-text-stroke: 1px #2e0808;   margin-top: -2px; }
+
+  /* Letter animation */
+  .letter {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(-40px) rotate(-8deg);
+    animation: letterDrop 0.45s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  }
+
+  @keyframes letterDrop {
+    to { opacity: 1; transform: translateY(0) rotate(0deg); }
+  }
+
+  /* ===================== CENTER VISUAL ===================== */
+  .center-visual {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    opacity: 0;
+    animation: popIn 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    animation-delay: 2.4s;
+  }
+
+  .globe {
+    width: 155px;
+    height: 155px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%,
+      rgba(60,100,160,0.5) 0%,
+      rgba(10,20,50,0.25) 60%,
+      transparent 80%
+    );
+    box-shadow:
+      0 0 40px rgba(101,0,2,0.6),
+      0 0 80px rgba(101,0,2,0.3);
+    border: 2px solid #650002;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 46px;
+    animation: globePulse 3s ease-in-out 3s infinite;
+  }
+
+  @keyframes globePulse {
+    0%, 100% { box-shadow: 0 0 40px rgba(101,0,2,0.6), 0 0 80px rgba(101,0,2,0.3); }
+    50%       { box-shadow: 0 0 60px rgba(101,0,2,0.9), 0 0 120px rgba(101,0,2,0.5); }
+  }
+
+  @keyframes popIn {
+    0%   { opacity: 0; transform: scale(0.6); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  .credit {
+    position: absolute;
+    bottom: 6px;
+    right: 2px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: rgba(180,200,230,0.4);
+    font-style: italic;
+  }
+
+  /* ===================== MAIN TEXT ===================== */
+  .main-text {
+    opacity: 0;
+    transform: translateX(-16px);
+    animation: slideRight 0.6s ease forwards;
+    animation-delay: 2.7s;
+    margin-bottom: 9px;
+  }
+
+  .main-text p {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    line-height: 1.68;
+    color: rgba(200,215,235,0.85);
+    border-left: 1px solid rgba(80,120,180,0.5);
+    padding-left: 8px;
+  }
+
+  @keyframes slideRight {
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  /* ===================== DIVIDER ===================== */
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, rgba(80,120,180,0.6), transparent);
+    margin-bottom: 9px;
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: expandLine 0.5s ease forwards;
+    animation-delay: 3.0s;
+  }
+
+  @keyframes expandLine {
+    to { transform: scaleX(1); }
+  }
+
+  /* ===================== BOTTOM ===================== */
+  .bottom-section {
+    display: flex;
+    gap: 10px;
+    opacity: 0;
+    transform: translateY(16px);
+    animation: riseUp 0.6s ease forwards;
+    animation-delay: 3.2s;
+  }
+
+  @keyframes riseUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .bottom-left { flex: 1; }
+
+  .bottom-left h3 {
+    font-family: 'Roboto', sans-serif;
+    font-size: 10.5px;
+    font-weight: 400;
+    color: #c47a7a;
+    margin-bottom: 6px;
+    letter-spacing: 0.3px;
+  }
+
+  .icons-row {
+    display: flex;
+    gap: 4px;
+    border: 1px solid rgba(80,120,180,0.3);
+    padding: 5px;
+    background: rgba(10,20,40,0.5);
+  }
+
+  .icon-box {
+    width: 42px;
+    height: 42px;
+    background: radial-gradient(circle at 40% 40%, #1e3560, #0a1525);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+    overflow: hidden;
+  }
+
+  .icon-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 3px;
+  }
+
+  .bottom-right {
+    flex: 1;
+    border-left: 1px solid rgba(80,120,180,0.2);
+    padding-left: 10px;
+  }
+
+  .bottom-right h2 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    color: #7a1a1a;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    line-height: 1.1;
+  }
+
+  .bottom-right p {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    line-height: 1.65;
+    color: rgba(190,210,230,0.8);
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
+  /* ===================== SCALE CONTROLS ===================== */
+  .scale-controls {
+    position: fixed;
+    bottom: 18px;
+    right: 18px;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: rgba(0,0,0,0.55);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 6px 5px;
+    backdrop-filter: blur(6px);
+  }
+
+  .scale-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.75);
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+    user-select: none;
+  }
+
+  .scale-btn:hover { background: rgba(255,255,255,0.18); }
+
+  .scale-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.5px;
+  }
+
+  /* Hide fit button on mobile, show on laptop */
+  .fit-btn { display: none; }
+
+  @media (min-width: 768px) {
+    .fit-btn { display: flex; font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="poster">
+  <div class="poster-bg">
+    <div class="bg-layer bg1"></div>
+    <div class="bg-layer bg2"></div>
+  </div>
+  <div class="stars"></div>
+  <canvas class="title-rain" id="rainCanvas"></canvas>
+  <div class="scanline"></div>
+
+  <div class="content">
+
+    <div class="title-section" id="titleSection">
+      <span class="title-row solid"  data-text="ILLEGAL"></span>
+      <span class="title-row echo1"  data-text="ILLEGAL"></span>
+      <span class="title-row echo2"  data-text="ILLEG"></span>
+      <span class="title-row echo3"  data-text="ILL"></span>
+    </div>
+
+    <div class="center-visual">
+      <div class="globe"><img src="Poster 2.jpeg" alt="warning" style="width:100%;height:100%;object-fit:cover;border-radius:50%;opacity:0.9;"></div>
+      <span class="credit">Made by Student</span>
+    </div>
+
+    <div class="main-text">
+      <p>
+        Illegal trade includes activities like selling fake products, drugs, weapons,
+        or protected animals. These actions are harmful because they affect the economy,
+        increase crime, and put people's health and safety in danger. Fake medicines can
+        make people sicker instead of helping them. Also, illegal trade often uses child
+        labor or unsafe working conditions. Governments lose money from taxes, leaving
+        fewer resources for schools, hospitals, and public services.
+      </p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="bottom-section">
+      <div class="bottom-left">
+        <h3>Types of illegal trade</h3>
+        <div class="icons-row">
+          <div class="icon-box"><img src="Animalitos.jpeg" alt="drugs"></div>
+          <div class="icon-box"><img src="la arma.jpeg" alt="weapon"></div>
+          <div class="icon-box"><img src="animalitos 2.jpeg" alt="animals"></div>
+          <div class="icon-box"><img src="maletin.jpeg" alt="fake goods"></div>
+        </div>
+      </div>
+      <div class="bottom-right">
+        <h2>STOP<br>ILLEGAL<br>TRADE</h2>
+        <p>
+          Governments should create stronger laws and improve border control.
+          Communities can educate others about the risks. Avoid buying cheap
+          products from unknown sources and report suspicious activities.
+          Together we can build a safer, fairer world for everyone.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Scale controls -->
+<div class="scale-controls">
+  <button class="scale-btn" id="btnUp">+</button>
+  <span class="scale-label" id="scaleLabel">75%</span>
+  <button class="scale-btn" id="btnDown">−</button>
+  <button class="scale-btn fit-btn" id="btnFit" title="Fit screen">⤢</button>
+</div>
+
+<script>
+  // Animate each letter in title rows with staggered delay
+  const rows = document.querySelectorAll('.title-row[data-text]');
+  // Row base delays (after scan finishes ~1.7s)
+  const rowDelays = [1.7, 1.95, 2.15, 2.3];
+
+  rows.forEach((row, rowIdx) => {
+    const text = row.getAttribute('data-text');
+    row.innerHTML = '';
+    [...text].forEach((char, i) => {
+      const span = document.createElement('span');
+      span.classList.add('letter');
+      span.textContent = char === ' ' ? '\u00A0' : char;
+      const delay = rowDelays[rowIdx] + i * 0.055;
+      span.style.animationDelay = delay + 's';
+      row.appendChild(span);
+    });
+  });
+
+  // Background crossfade between fondo.jpeg and fondo 2.jpeg
+  const bg1 = document.querySelector('.bg-layer.bg1');
+  const bg2 = document.querySelector('.bg-layer.bg2');
+  let showingBg1 = true;
+  setInterval(() => {
+    showingBg1 = !showingBg1;
+    bg1.style.opacity = showingBg1 ? '1' : '0';
+    bg2.style.opacity = showingBg1 ? '0' : '1';
+  }, 4000);
+  const poster = document.querySelector('.poster');
+  const label  = document.getElementById('scaleLabel');
+  let scale = 0.75;
+  const STEP = 0.05;
+  const MIN  = 0.4;
+  const MAX  = 1.5;
+
+  function applyScale() {
+    poster.style.transform = `scale(${scale})`;
+    poster.style.transformOrigin = 'center center';
+    label.textContent = Math.round(scale * 100) + '%';
+  }
+
+  applyScale();
+
+  document.getElementById('btnUp').addEventListener('click', () => {
+    scale = Math.min(MAX, +(scale + STEP).toFixed(2));
+    applyScale();
+  });
+
+  document.getElementById('btnDown').addEventListener('click', () => {
+    scale = Math.max(MIN, +(scale - STEP).toFixed(2));
+    applyScale();
+  });
+
+  // Fit screen: scale poster to fill the viewport
+  document.getElementById('btnFit').addEventListener('click', () => {
+    const scaleX = window.innerWidth  / 390;
+    const scaleY = window.innerHeight / 844;
+    scale = +Math.min(scaleX, scaleY).toFixed(2);
+    scale = Math.min(MAX, Math.max(MIN, scale));
+    applyScale();
+  });
+
+  // ===================== LETTER RAIN =====================
+  const canvas = document.getElementById('rainCanvas');
+  const ctx    = canvas.getContext('2d');
+  canvas.width  = 390;
+  canvas.height = 844;
+
+  // The 4 title rows with their font sizes and y positions (matching CSS)
+  // We'll read actual positions after DOM settles
+  const titleRows = [
+    { text: 'ILLEGAL', size: 54, color: '139,26,26' },
+    { text: 'ILLEGAL', size: 44, color: '107,18,18' },
+    { text: 'ILLEG',   size: 33, color: '74,13,13'  },
+    { text: 'ILL',     size: 22, color: '46,8,8'    },
+  ];
+
+  // Build one raindrop per letter per row
+  const drops = [];
+
+  function initDrops() {
+    const section = document.getElementById('titleSection');
+    const sectionRect = section.getBoundingClientRect();
+    const posterRect  = document.querySelector('.poster').getBoundingClientRect();
+
+    titleRows.forEach((row, rowIdx) => {
+      const rowEl = section.querySelectorAll('.title-row')[rowIdx];
+      const rowRect = rowEl.getBoundingClientRect();
+      const rowY = rowRect.top - posterRect.top + rowRect.height * 0.85;
+
+      // Measure total width to center-align like CSS
+      ctx.font = `bold ${row.size}px 'Oswald', sans-serif`;
+      ctx.letterSpacing = '3px';
+      let totalW = 0;
+      [...row.text].forEach(ch => { totalW += ctx.measureText(ch).width + 3; });
+      const startX = 16; // matches padding
+
+      let curX = startX;
+      [...row.text].forEach((char, i) => {
+        const charW = ctx.measureText(char).width + 3;
+        drops.push({
+          char,
+          x: curX + charW / 2,
+          originY: rowY,
+          y: rowY,
+          size: row.size,
+          color: row.color,
+          speed: 0.5 + Math.random() * 0.4,
+          delay: Math.random() * 3000,   // stagger start
+          alpha: 0,
+          phase: 'wait',                 // wait → fall → reset
+          timer: Date.now() + Math.random() * 3000
+        });
+        curX += charW;
+      });
+    });
+
+    requestAnimationFrame(rainLoop);
+  }
+
+  function rainLoop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const now = Date.now();
+
+    drops.forEach(drop => {
+      if (drop.phase === 'wait') {
+        if (now >= drop.timer) {
+          drop.phase = 'fall';
+          drop.y     = drop.originY;
+          drop.alpha = 1;
+        }
+        return;
+      }
+
+      if (drop.phase === 'fall') {
+        drop.y     += drop.speed;
+        drop.alpha -= 0.008;            // slow fade as it falls
+
+        if (drop.alpha <= 0) {
+          drop.phase = 'wait';
+          drop.timer = now + 1500 + Math.random() * 2500; // pause before next drop
+          drop.y     = drop.originY;
+          drop.alpha = 0;
+          return;
+        }
+
+        ctx.save();
+        ctx.font = `bold ${drop.size}px 'Oswald', sans-serif`;
+        ctx.fillStyle = `rgba(${drop.color}, ${drop.alpha})`;
+        ctx.fillText(drop.char, drop.x, drop.y);
+        ctx.restore();
+      }
+    });
+
+    requestAnimationFrame(rainLoop);
+  }
+
+  // Wait for fonts + animations to settle before reading positions
+  setTimeout(initDrops, 4000);
+</script>
+</body>
+</html>
